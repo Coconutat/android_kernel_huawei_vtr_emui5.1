@@ -24,28 +24,6 @@ then
 	mkdir out
 fi
 
-#添加或更新AK3
-
-if [ -f tools/AnyKernel3/README.md ];
-then
-	cd tools/AnyKernel3
-	echo " "
-	echo "***Updating AnyKernel3...***"
-	echo " "
-	git pull upstream master
-else
-	echo " "
-	echo "***Adding AnyKernel3...***"
-	echo " "
-	git submodule update --init --recursive
-	cd tools/AnyKernel3
-	git remote add upstream https://github.com/osm0sis/AnyKernel3
-	echo "***Updating AnyKernel3...***"
-	echo " "
-	git pull upstream master
-fi
-cd ../..
-echo " "
 
 #输入盘古内核版本号
 printf "Please enter EMUI5.1 Kernel version number: "
@@ -56,7 +34,7 @@ export EV=EXTRAVERSION=_Kirin960_EMUI5.1_V$v
 
 #构建P10内核部分
 echo "***Building for P10 version...***"
-make ARCH=arm64 O=out $EV P10_hi3660_mod_defconfig
+make ARCH=arm64 O=out $EV Lite_hi3660_mod_defconfig
 # 定义编译线程数
 make ARCH=arm64 O=out $EV -j256
 
@@ -64,14 +42,8 @@ make ARCH=arm64 O=out $EV -j256
 
 if [ -f out/arch/arm64/boot/Image.gz ];
 then
-	echo "***Packing P10 version kernel...***"
-	cp out/arch/arm64/boot/Image.gz tools/AnyKernel3/Image.gz
+
 	cp out/arch/arm64/boot/Image.gz Image.gz 
-	cd tools/AnyKernel3
-	zip -r9 EMUI5.1_V"$v"_P10.zip * > /dev/null
-	cd ../..
-	mv tools/AnyKernel3/EMUI5.1_V"$v"_P10.zip EMUI5.1_V"$v"_P10.zip
-	rm -rf tools/AnyKernel3/Image.gz
 	echo " "
 	echo "***Sucessfully built P10 version kernel...***"
 	echo " "

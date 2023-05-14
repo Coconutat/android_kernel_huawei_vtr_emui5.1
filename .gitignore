@@ -1,5 +1,5 @@
-.img
-.zip
+*.img
+*.zip
 log*.txt
 out
 *.gz
